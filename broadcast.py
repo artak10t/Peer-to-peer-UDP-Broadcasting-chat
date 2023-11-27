@@ -140,7 +140,7 @@ def display_nodes():
     for node in current_nodes:
         b = tk.Button(broadcast_window, 
                       text = 'Chat with ' + node.name + ' | ' + node.ip + ':' + str(node.port), 
-                      command=lambda: chat_with(node.ip, node.port, node.name),
+                      command=lambda ip=node.ip, port=node.port, name=node.name: chat_with(ip, port, name),
                       width=500)
         b.pack()
     
