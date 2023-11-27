@@ -87,7 +87,6 @@ def chat_server():
     global is_window_destroyed
     global client_socket
     global broadcast_window
-    client_connections = 0
 
     try:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -98,26 +97,22 @@ def chat_server():
         return
     
     while not is_window_destroyed:
-        if(client_connections != 1):
-                try:
-                    client, address = client_socket.accept()
-                    client_connections = 1
-                    client_name = client.recv(1024).decode()
-                    result = messagebox.askquestion("Accept Chat?", client_name + ' wants to chat')
+        try:
+            client, address = client_socket.accept()
+            client_name = client.recv(1024).decode()
+            result = messagebox.askquestion("Accept Chat?", client_name + ' wants to chat')
 
-                    if(result == 'no'):
-                        data = 'NOTALLOWED'
-                        client.send(data.encode())
-                        client.close()
-                        client_connections = 0
-                    elif(result == 'yes'):
-                        data = 'ALLOWED'
-                        client.send(data.encode())
-                        broadcast_window.withdraw()
-                        chat_serverside.init(broadcast_window, my_name, client_name, client)
-                except:
-                    print('Closing chat socket')
-
+            if(result == 'no'):
+                data = 'NOTALLOWED'
+                client.send(data.encode())
+                client.close()
+            elif(result == 'yes'):
+                data = 'ALLOWED'
+                client.send(data.encode())
+                broadcast_window.withdraw()
+                chat_serverside.init(broadcast_window, my_name, client_name, client)
+        except:
+            print('Closing chat socket')
 
 # Open chat window on Chat With click
 def chat_with(ip, port, name):
